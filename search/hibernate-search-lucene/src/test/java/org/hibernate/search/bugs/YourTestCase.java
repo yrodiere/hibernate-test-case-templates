@@ -25,21 +25,21 @@ public class YourTestCase extends SearchTestBase {
 	@SuppressWarnings("unchecked")
 	public void testYourBug() {
 		try ( Session s = getSessionFactory().openSession() ) {
-			YourAnnotatedEntity yourEntity1 = new YourAnnotatedEntity( 1L, "example" );
-			YourAnnotatedEntity yourEntity2 = new YourAnnotatedEntity( 2L, "test" );
-	
+			YourAnnotatedEntity yourEntity1 = new YourAnnotatedEntity( 0L, "example" );
+			YourAnnotatedEntity yourEntity2 = new YourAnnotatedEntity( 1L, "alpha" );
+
 			Transaction tx = s.beginTransaction();
 			s.persist( yourEntity1 );
 			s.persist( yourEntity2 );
 			tx.commit();
-	
+
 			FullTextSession session = Search.getFullTextSession( s );
 			QueryBuilder qb = session.getSearchFactory().buildQueryBuilder().forEntity( YourAnnotatedEntity.class ).get();
 			Query query = qb.keyword().onField( "name" ).matching( "example" ).createQuery();
-	
+
 			List<YourAnnotatedEntity> result = (List<YourAnnotatedEntity>) session.createFullTextQuery( query ).list();
 			assertEquals( 1, result.size() );
-			assertEquals( 1l, (long) result.get( 0 ).getId() );
+			assertEquals( 0L, (long) result.get( 0 ).getId() );
 		}
 	}
 
