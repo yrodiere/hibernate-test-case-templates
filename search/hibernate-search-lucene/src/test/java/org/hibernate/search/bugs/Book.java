@@ -1,7 +1,5 @@
 package org.hibernate.search.bugs;
 
-import javax.persistence.Access;
-import javax.persistence.AccessType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -13,9 +11,6 @@ import org.hibernate.search.annotations.Indexed;
 @Indexed
 public class Book {
     private String _text;
-
-    @Id
-    @GeneratedValue
     private long id;
 
     public Book() {
@@ -26,7 +21,6 @@ public class Book {
     }
 
     @Field(name="txtfld")
-    @Access(AccessType.PROPERTY)
     public String getText() {
         return _text;
     }
@@ -35,9 +29,15 @@ public class Book {
         this._text = text;
     }
 
+    @Id
+    @GeneratedValue
     public long getId() {
         return id;
     }
 
+    // For Hibernate
+    protected void setId(long id) {
+    	this.id = id;
+    }
 
 }
