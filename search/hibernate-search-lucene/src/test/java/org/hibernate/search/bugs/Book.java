@@ -1,5 +1,7 @@
 package org.hibernate.search.bugs;
 
+import javax.persistence.Access;
+import javax.persistence.AccessType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -24,6 +26,7 @@ public class Book {
     }
 
     @Field(name="txtfld")
+    @Access(AccessType.PROPERTY)
     public String getText() {
         return _text;
     }
