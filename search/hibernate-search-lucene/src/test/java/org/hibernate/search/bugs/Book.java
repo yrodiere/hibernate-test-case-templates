@@ -10,7 +10,10 @@ import org.hibernate.search.annotations.Indexed;
 @Entity
 @Indexed
 public class Book {
+    @Field(name="txtfld")
     private String _text;
+    @Id
+    @GeneratedValue
     private long id;
 
     public Book() {
@@ -20,7 +23,6 @@ public class Book {
         this._text = text;
     }
 
-    @Field(name="txtfld")
     public String getText() {
         return _text;
     }
@@ -29,15 +31,8 @@ public class Book {
         this._text = text;
     }
 
-    @Id
-    @GeneratedValue
     public long getId() {
         return id;
-    }
-
-    // For Hibernate
-    protected void setId(long id) {
-    	this.id = id;
     }
 
 }
