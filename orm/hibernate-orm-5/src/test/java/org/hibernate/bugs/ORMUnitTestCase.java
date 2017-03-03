@@ -15,11 +15,15 @@
  */
 package org.hibernate.bugs;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.AvailableSettings;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.testing.junit4.BaseCoreFunctionalTestCase;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -37,8 +41,7 @@ public class ORMUnitTestCase extends BaseCoreFunctionalTestCase {
 	@Override
 	protected Class[] getAnnotatedClasses() {
 		return new Class[] {
-//				Foo.class,
-//				Bar.class
+				MyEntity.class
 		};
 	}
 
@@ -72,8 +75,24 @@ public class ORMUnitTestCase extends BaseCoreFunctionalTestCase {
 		// BaseCoreFunctionalTestCase automatically creates the SessionFactory and provides the Session.
 		Session s = openSession();
 		Transaction tx = s.beginTransaction();
-		// Do stuff...
+		MyEntity entity = new MyEntity();
+		entity.id = 1L;
+		s.persist( entity );
 		tx.commit();
 		s.close();
+
+		s = openSession();
+		tx = s.beginTransaction();
+		entity = s.load( MyEntity.class, 1L );
+		Assert.assertNotNull( entity.id );
+		tx.commit();
+		s.close();
+	}
+	
+	@Entity
+	public static class MyEntity {
+		
+		@Id
+		public Long id;
 	}
 }
