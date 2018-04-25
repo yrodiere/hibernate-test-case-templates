@@ -1,0 +1,444 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.hibernate.testcasetemplate</groupId>
+    <artifactId>test-case-template-hibernate-search-wildfly</artifactId>
+    <version>1.0.0.Final</version>
+    <name>Hibernate Search in WildFly Test Case Template</name>
+
+    <properties>
+        <version.org.hibernate.search>5.10.0.Beta2</version.org.hibernate.search>
+        <version.org.hibernate>5.3.0.CR1</version.org.hibernate>
+
+        <version.org.jboss.spec.javax.ejb.jboss-ejb-api_3.2_spec>1.0.0.Final</version.org.jboss.spec.javax.ejb.jboss-ejb-api_3.2_spec>
+        <version.org.jboss.spec.javax.transaction.jboss-transaction-api_1.2_spec>1.1.1.Final</version.org.jboss.spec.javax.transaction.jboss-transaction-api_1.2_spec>
+
+        <version.junit>4.11</version.junit>
+
+        <version.org.jboss.arquillian>1.1.11.Final</version.org.jboss.arquillian>
+        <version.org.jboss.shrinkwrap.resolver>2.2.2</version.org.jboss.shrinkwrap.resolver>
+        <version.org.wildfly.arquillian>2.0.0.Final</version.org.wildfly.arquillian>
+
+        <version.wildfly>12.0.0.Final</version.wildfly>
+
+        <version.compiler.plugin>3.7.0</version.compiler.plugin>
+        <version.surefire.plugin>2.20.1</version.surefire.plugin>
+        <version.failsafe.plugin>${version.surefire.plugin}</version.failsafe.plugin>
+        <version.buildhelper.plugin>3.0.0</version.buildhelper.plugin>
+        <version.dependency.plugin>3.0.2</version.dependency.plugin>
+
+        <version.wildfly.plugin>1.2.1.Final</version.wildfly.plugin>
+        <version.org.wildfly.build-tools>1.2.9.Final</version.org.wildfly.build-tools>
+
+        <version.jpa22.wildfly-patch>1.0.0.Beta2</version.jpa22.wildfly-patch>
+        <test.jpa22.wildfly-patch.filename>hibernate-jpa-api-2.2-wildflymodules-${version.jpa22.wildfly-patch}-wildfly-${version.wildfly}-patch.zip</test.jpa22.wildfly-patch.filename>
+
+        <test.module-slot.org.hibernate.search>main</test.module-slot.org.hibernate.search>
+        <test.module-slot.org.hibernate>${parsed-version.org.hibernate.majorVersion}.${parsed-version.org.hibernate.minorVersion}</test.module-slot.org.hibernate>
+
+        <!-- JBoss public repository -->
+
+        <jboss.public.repo.id>jboss-public-repository-group</jboss.public.repo.id>
+        <jboss.public.repo.url>https://repository.jboss.org/nexus/content/groups/public-jboss/</jboss.public.repo.url>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <!-- We override the version of ShrinkWrap Maven Resolver from Arquillian BOM:
+             this section must be declared before the Arquillian bom import -->
+            <dependency>
+                <groupId>org.jboss.shrinkwrap.resolver</groupId>
+                <artifactId>shrinkwrap-resolver-bom</artifactId>
+                <version>${version.org.jboss.shrinkwrap.resolver}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <!-- Imports compatible versions for each Arquillian module -->
+            <dependency>
+                <groupId>org.jboss.arquillian</groupId>
+                <artifactId>arquillian-bom</artifactId>
+                <version>${version.org.jboss.arquillian}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-search-orm</artifactId>
+            <version>${version.org.hibernate.search}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
+            <version>${version.org.hibernate}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-entitymanager</artifactId>
+            <version>${version.org.hibernate}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.spec.javax.ejb</groupId>
+            <artifactId>jboss-ejb-api_3.2_spec</artifactId>
+            <version>${version.org.jboss.spec.javax.ejb.jboss-ejb-api_3.2_spec}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.spec.javax.transaction</groupId>
+            <artifactId>jboss-transaction-api_1.2_spec</artifactId>
+            <version>${version.org.jboss.spec.javax.transaction.jboss-transaction-api_1.2_spec}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- Tests -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${version.junit}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Arquillian -->
+        <dependency>
+            <groupId>org.jboss.arquillian.junit</groupId>
+            <artifactId>arquillian-junit-container</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.shrinkwrap.resolver</groupId>
+            <artifactId>shrinkwrap-resolver-depchain</artifactId>
+            <scope>test</scope>
+            <type>pom</type>
+        </dependency>
+        <dependency>
+            <groupId>org.wildfly.arquillian</groupId>
+            <artifactId>wildfly-arquillian-container-managed</artifactId>
+            <version>${version.org.wildfly.arquillian}</version>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.jboss.logmanager</groupId>
+                    <artifactId>jboss-logmanager</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.jboss.logmanager</groupId>
+                    <artifactId>log4j-jboss-logmanager</artifactId>
+                </exclusion>
+                <!-- This exclusion is needed to be able to setup the project in Windows:
+                     it otherwise includes transitive dependency to the JDK JConsole -->
+                <exclusion>
+                    <artifactId>wildfly-patching</artifactId>
+                    <groupId>org.wildfly</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.shrinkwrap.descriptors</groupId>
+            <artifactId>shrinkwrap-descriptors-impl-javaee</artifactId>
+            <scope>test</scope>
+            <exclusions>
+                <!-- This exclusion is needed to be able to setup the project in Windows:
+                     it otherwise includes transitive dependency to the JDK JConsole -->
+                <exclusion>
+                    <artifactId>wildfly-patching</artifactId>
+                    <groupId>org.wildfly</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <testResources>
+            <testResource>
+                <filtering>true</filtering>
+                <directory>src/test/resources</directory>
+            </testResource>
+        </testResources>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <configuration>
+                    <runOrder>alphabetical</runOrder>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>integration-test</goal>
+                            <goal>verify</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <!-- This defines the properties 'parsedVersion.majorVersion'
+                    and 'parsedVersion.minorVersion' to be in synch with the current project version -->
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>parse-search-version</id>
+                        <goals>
+                            <goal>parse-version</goal>
+                        </goals>
+                        <configuration>
+                            <propertyPrefix>parsed-version.org.hibernate.search</propertyPrefix>
+                            <versionString>${version.org.hibernate.search}</versionString>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>parse-orm-version</id>
+                        <goals>
+                            <goal>parse-version</goal>
+                        </goals>
+                        <configuration>
+                            <propertyPrefix>parsed-version.org.hibernate</propertyPrefix>
+                            <versionString>${version.org.hibernate}</versionString>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>${version.compiler.plugin}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>${version.surefire.plugin}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-failsafe-plugin</artifactId>
+                    <version>${version.failsafe.plugin}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>build-helper-maven-plugin</artifactId>
+                    <version>${version.buildhelper.plugin}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.wildfly.build</groupId>
+                    <artifactId>wildfly-server-provisioning-maven-plugin</artifactId>
+                    <version>${version.org.wildfly.build-tools}</version>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-dependency-plugin</artifactId>
+                    <version>${version.dependency.plugin}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.wildfly.plugins</groupId>
+                    <artifactId>wildfly-maven-plugin</artifactId>
+                    <version>${version.wildfly.plugin}</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+
+    <profiles>
+        <profile>
+            <!--
+                With this testing profile, the TS will automatically unzip WildFly distributions obtained via
+                Maven's dependency resolution mechanisms, as opposed to the mode where
+                the user is expected to prepare the distributions beforehand.
+                This is active by default, unless you specify a value for jbossHome.
+            -->
+            <id>unzipWildFly</id>
+            <activation>
+                <property>
+                    <name>!jbossHome</name>
+                </property>
+            </activation>
+            <properties>
+                <jbossHome>${project.build.directory}/wildfly-node</jbossHome>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.wildfly.build</groupId>
+                        <artifactId>wildfly-server-provisioning-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>server-provisioning</id>
+                                <goals>
+                                    <goal>build</goal>
+                                </goals>
+                                <phase>compile</phase>
+                                <configuration>
+                                    <skip>${skipWildFlyPreparation}</skip>
+                                    <config-file>server-provisioning.xml</config-file>
+                                    <server-name>wildfly-node</server-name>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>fetch-jpa-patch</id>
+                                <phase>process-test-resources</phase>
+                                <goals>
+                                    <goal>copy</goal>
+                                </goals>
+                                <configuration>
+                                    <skip>${skipWildFlyPreparation}</skip>
+                                    <artifactItems>
+                                        <artifactItem>
+                                            <groupId>org.hibernate.javax.persistence</groupId>
+                                            <artifactId>hibernate-jpa-api-2.2-wildflymodules</artifactId>
+                                            <classifier>wildfly-${version.wildfly}-patch</classifier>
+                                            <version>${version.jpa22.wildfly-patch}</version>
+                                            <type>zip</type>
+                                            <outputDirectory>${project.build.directory}</outputDirectory>
+                                            <overWrite>true</overWrite>
+                                            <destFileName>${test.jpa22.wildfly-patch.filename}</destFileName>
+                                        </artifactItem>
+                                    </artifactItems>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.wildfly.plugins</groupId>
+                        <artifactId>wildfly-maven-plugin</artifactId>
+                        <executions>
+                            <!-- Install JPA 2.2 patch -->
+                            <execution>
+                                <id>apply-wildfly-jpa22-patch-file</id>
+                                <phase>pre-integration-test</phase>
+                                <goals>
+                                    <goal>execute-commands</goal>
+                                </goals>
+                                <configuration>
+                                    <skip>${skipWildFlyPreparation}</skip>
+                                    <offline>true</offline>
+                                    <jbossHome>${jbossHome}</jbossHome>
+                                    <!-- The CLI script below will fail if the patch was already applied in a previous build -->
+                                    <fail-on-error>false</fail-on-error>
+                                    <commands>
+                                        <command>patch apply --override-all ${project.build.directory}/${test.jpa22.wildfly-patch.filename}</command>
+                                    </commands>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <!--
+                With this profile, the TS will use Hibernate Search modules from the feature pack,
+                as opposed to testing the modules already included in WildFly distribution
+                (org.hibernate.search.orm:main).
+                This is active by default.
+             -->
+            <id>useFeaturePackModules</id>
+            <activation>
+                <property>
+                    <name>!useBuiltinModules</name>
+                </property>
+            </activation>
+            <properties>
+                <!-- the slot will be inferred at runtime -->
+                <test.module-slot.org.hibernate.search/>
+            </properties>
+        </profile>
+        <profile>
+            <!--
+                When using built-in modules, set the correct Hibernate ORM module slot (main).
+             -->
+            <id>useBuiltinModules</id>
+            <activation>
+                <property>
+                    <name>useBuiltinModules</name>
+                </property>
+            </activation>
+            <properties>
+                <test.module-slot.org.hibernate>main</test.module-slot.org.hibernate>
+            </properties>
+        </profile>
+    </profiles>
+
+    <!--
+        Enable a hard-coded JBoss repository configuration in WildFly-related tests.
+        This allows us to run a CI job with default Maven settings,
+        checking that any other module only relies on dependencies available in Maven Central.
+     -->
+    <repositories>
+        <!-- Use Central first -->
+        <repository>
+            <id>central</id>
+            <name>Maven Central</name>
+            <url>http://repo.maven.apache.org/maven2/</url>
+            <snapshots>
+                <enabled>false</enabled>
+                <updatePolicy>never</updatePolicy>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>${jboss.public.repo.id}</id>
+            <name>JBoss Public Maven Repository Group</name>
+            <url>${jboss.public.repo.url}</url>
+            <layout>default</layout>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>never</updatePolicy>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>never</updatePolicy>
+            </snapshots>
+        </repository>
+    </repositories>
+    <pluginRepositories>
+        <!-- Use Central first -->
+        <pluginRepository>
+            <id>central</id>
+            <name>Maven Central</name>
+            <url>http://repo.maven.apache.org/maven2/</url>
+            <snapshots>
+                <enabled>false</enabled>
+                <updatePolicy>never</updatePolicy>
+            </snapshots>
+        </pluginRepository>
+        <pluginRepository>
+            <id>${jboss.public.repo.id}</id>
+            <name>JBoss Public Maven Repository Group</name>
+            <url>${jboss.public.repo.url}</url>
+            <layout>default</layout>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>never</updatePolicy>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>never</updatePolicy>
+            </snapshots>
+        </pluginRepository>
+    </pluginRepositories>
+</project>

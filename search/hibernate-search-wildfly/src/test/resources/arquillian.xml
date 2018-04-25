@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ ~ Hibernate Search, full-text search for your domain model
+ ~
+ ~ License: GNU Lesser General Public License (LGPL), version 2.1 or later
+ ~ See the lgpl.txt file in the root directory or <http://www.gnu.org/licenses/lgpl-2.1.html>.
+  -->
+<arquillian xmlns="http://jboss.org/schema/arquillian"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://jboss.org/schema/arquillian
+        http://jboss.org/schema/arquillian/arquillian_1_0.xsd">
+
+    <defaultProtocol type="Servlet 3.0" />
+
+    <!-- Uncomment in order to inspect deployments -->
+    <!--
+    <engine>
+        <property name="deploymentExportPath">target/deployments</property>
+    </engine>
+    -->
+
+    <group qualifier="Grid" default="true">
+        <container qualifier="container.active" default="true">
+            <configuration>
+                <property name="jbossHome">${jbossHome}</property>
+                <!-- Needed for JMS tests -->
+                <property name="serverConfig">standalone-full.xml</property>
+                <!--
+                  Some arguments below are JBoss modules settings taken from
+                  https://github.com/jboss-modules/jboss-modules/blob/5b4744e74f35cbab23536e3e52c0724fdbbedcb7/src/main/java/org/jboss/modules/maven/MavenSettings.java#L264
+                  - remote.maven.repo: necessary for the WF provisioning to work when the JBoss Nexus is not in the user's settings
+                  - maven.repo.local: necessary for the WF provisioning to work when using a non-default local repository
+                 -->
+                <property name="javaVmArguments">
+                    -Xmx512m
+                    -Djava.net.preferIPv4Stack=true
+                    -Djgroups.bind_addr=127.0.0.1
+                    -Dremote.maven.repo=${repository.jboss-public.url}
+                    -Dmaven.repo.local=${settings.localRepository}
+                    -Dee8.preview.mode=true
+                </property>
+                <!-- To debug the Arquillian managed application server:
+                <property name="javaVmArguments">
+                    -Xrunjdwp:transport=dt_socket,address=5005,server=y,suspend=y
+                    -Xmx512m
+                    -Djava.net.preferIPv4Stack=true
+                    -Djgroups.bind_addr=127.0.0.1
+                    -Dremote.maven.repo=${repository.jboss-public.url}
+                    -Dmaven.repo.local=${settings.localRepository}
+                    -Dee8.preview.mode=true
+                </property>
+                 -->
+            </configuration>
+        </container>
+    </group>
+
+</arquillian>
