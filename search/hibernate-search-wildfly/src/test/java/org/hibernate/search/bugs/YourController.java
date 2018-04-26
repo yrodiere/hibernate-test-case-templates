@@ -16,6 +16,8 @@ import org.hibernate.search.jpa.FullTextQuery;
 import org.hibernate.search.jpa.Search;
 import org.hibernate.search.query.dsl.QueryBuilder;
 
+import org.apache.lucene.index.Term;
+import org.apache.lucene.queries.TermFilter;
 import org.apache.lucene.search.Query;
 
 @Transactional
@@ -44,5 +46,12 @@ public class YourController {
 		FullTextQuery query = ftEm.createFullTextQuery( luceneQuery );
 		query.enableFullTextFilter( "nameFilter" ).setParameter( "name", terms );
 		return (List<YourAnnotatedEntity>) query.getResultList();
+	}
+
+	public List<YourAnnotatedEntity> searchUsingDslFilterBy(String terms) {
+		FullTextEntityManager ftEm = Search.getFullTextEntityManager( em );
+		QueryBuilder qb = ftEm.getSearchFactory().buildQueryBuilder().forEntity( YourAnnotatedEntity.class ).get();
+		Query query = qb.all().filteredBy( new TermFilter( new Term( "name", terms ) ) ).createQuery();
+		return (List<YourAnnotatedEntity>) ftEm.createFullTextQuery( query ).getResultList();
 	}
 }
