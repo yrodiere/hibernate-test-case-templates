@@ -36,4 +36,13 @@ public class YourController {
 		Query query = qb.keyword().onField( "name" ).matching( terms ).createQuery();
 		return (List<YourAnnotatedEntity>) ftEm.createFullTextQuery( query ).getResultList();
 	}
+
+	public List<YourAnnotatedEntity> searchUsingPreDefinedFilter(String terms) {
+		FullTextEntityManager ftEm = Search.getFullTextEntityManager( em );
+		QueryBuilder qb = ftEm.getSearchFactory().buildQueryBuilder().forEntity( YourAnnotatedEntity.class ).get();
+		Query luceneQuery = qb.all().createQuery();
+		FullTextQuery query = ftEm.createFullTextQuery( luceneQuery );
+		query.enableFullTextFilter( "nameFilter" ).setParameter( "name", terms );
+		return (List<YourAnnotatedEntity>) query.getResultList();
+	}
 }

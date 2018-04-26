@@ -5,10 +5,12 @@ import javax.persistence.Id;
 
 import org.hibernate.search.annotations.DocumentId;
 import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.FullTextFilterDef;
 import org.hibernate.search.annotations.Indexed;
 
 @Entity
 @Indexed
+@FullTextFilterDef( name = "nameFilter", impl = NameFilterFactory.class)
 public class YourAnnotatedEntity {
 
 	@Id
