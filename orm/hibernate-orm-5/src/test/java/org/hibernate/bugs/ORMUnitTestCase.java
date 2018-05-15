@@ -23,6 +23,7 @@ import org.hibernate.testing.junit4.BaseCoreFunctionalTestCase;
 import org.junit.Test;
 
 import com.Foo;
+import com.genericsenhancement.Generic;
 
 /**
  * This template demonstrates how to develop a test case for Hibernate ORM, using its built-in unit test framework.
@@ -40,7 +41,7 @@ public class ORMUnitTestCase extends BaseCoreFunctionalTestCase {
 	protected Class[] getAnnotatedClasses() {
 		return new Class[] {
 				Foo.class,
-				//				Bar.class
+				Generic.class
 		};
 	}
 
@@ -72,7 +73,7 @@ public class ORMUnitTestCase extends BaseCoreFunctionalTestCase {
 	// Add your tests, using standard JUnit.
 	@Test
 	public void hhh12555() throws Exception {
-		// BaseCoreFunctionalTestCase automatically creates the SessionFactory and provides the Session.
+		// remove Generic from annotated classes as otherweise, hhh12579 will crash bootstrapping!
 		Session s = openSession();
 		Transaction tx = s.beginTransaction();
 		// Do stuff...
@@ -85,5 +86,10 @@ public class ORMUnitTestCase extends BaseCoreFunctionalTestCase {
 		System.err.println("Blob: " + foo.blob);
 		tx.commit();
 		s.close();
+	}
+
+	@Test
+	public void hhh12579() throws Exception {
+		new Generic();
 	}
 }
