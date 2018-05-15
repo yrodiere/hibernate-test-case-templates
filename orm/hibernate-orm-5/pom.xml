@@ -67,7 +67,7 @@
                         <configuration>
                             <failOnError>true</failOnError>
                             <enableLazyInitialization>true</enableLazyInitialization>
-                            <enableDirtyTracking>false</enableDirtyTracking>
+                            <enableDirtyTracking>true</enableDirtyTracking>
                             <enableAssociationManagement>false</enableAssociationManagement>
                             <enableExtendedEnhancement>false</enableExtendedEnhancement>
                         </configuration>
