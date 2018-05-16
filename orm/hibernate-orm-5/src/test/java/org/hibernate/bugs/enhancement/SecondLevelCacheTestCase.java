@@ -19,7 +19,9 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.AvailableSettings;
 import org.hibernate.cfg.Configuration;
+import org.hibernate.metamodel.spi.MetamodelImplementor;
 import org.hibernate.testing.junit4.BaseCoreFunctionalTestCase;
+import org.junit.Assert;
 import org.junit.Test;
 
 import com.enhancement.secondlevelcache.BaseEntity;
@@ -66,6 +68,9 @@ public class SecondLevelCacheTestCase extends BaseCoreFunctionalTestCase {
 
 	@Test
 	public void hhh12588() throws Exception {
-		System.out.println("Just execute this test, you will see that @Cache on a non-root entity is ignored.");
+		MetamodelImplementor m = sessionFactory().getMetamodel();
+		Class<?> c = ChildEntity.class;
+		Assert.assertTrue(c.getSimpleName() + " cannot read from cache!", m.entityPersister(c).canReadFromCache());
+		Assert.assertTrue(c.getSimpleName() + " cannot write to cache!", m.entityPersister(c).canWriteToCache());
 	}
 }
