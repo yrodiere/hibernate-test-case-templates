@@ -1,4 +1,4 @@
-package com.genericsenhancement;
+package com.enhancement.generics;
 
 import javax.persistence.Entity;
 

@@ -1,4 +1,4 @@
-package com;
+package com.collectionwithblob;
 
 import java.util.HashSet;
 import java.util.Set;

@@ -1,11 +1,7 @@
-package com.genericsenhancement;
-
-import java.util.LinkedHashSet;
-import java.util.Set;
+package com.enhancement.generics;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
-import javax.persistence.ElementCollection;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
@@ -15,21 +11,20 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @MappedSuperclass
 @Cache(usage = CacheConcurrencyStrategy.NONE)
-public class AbstractMail {
-
-	@Access(AccessType.PROPERTY)
-	private Set<String> to = new LinkedHashSet<>();
+public class AbstractGeneric<T extends Marker> {
 
 	@Id
 	@GeneratedValue
 	public int id;
 
-	@ElementCollection
-	public Set<String> getTo() {
-		return to;
+	@Access(AccessType.PROPERTY)
+	private T entity;
+
+	public T getEntity() {
+		return entity;
 	}
 
-	private void setTo(Set<String> to) {
-		this.to = to;
+	public void setEntity(T entity) {
+		this.entity = entity;
 	}
 }

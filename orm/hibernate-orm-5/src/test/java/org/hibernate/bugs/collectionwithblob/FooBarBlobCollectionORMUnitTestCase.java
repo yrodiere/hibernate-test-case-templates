@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.hibernate.bugs;
+package org.hibernate.bugs.collectionwithblob;
 
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -21,8 +21,8 @@ import org.hibernate.testing.junit4.BaseCoreFunctionalTestCase;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.Bar;
-import com.Foo;
+import com.collectionwithblob.Bar;
+import com.collectionwithblob.Foo;
 
 /**
  * This template demonstrates how to develop a test case for Hibernate ORM, using its built-in unit test framework.

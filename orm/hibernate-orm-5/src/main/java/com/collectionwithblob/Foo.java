@@ -1,4 +1,4 @@
-package com;
+package com.collectionwithblob;
 
 import java.sql.Blob;
 
