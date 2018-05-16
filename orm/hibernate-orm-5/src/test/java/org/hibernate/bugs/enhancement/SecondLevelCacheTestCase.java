@@ -15,10 +15,14 @@
  */
 package org.hibernate.bugs.enhancement;
 
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+import org.hibernate.cfg.AvailableSettings;
+import org.hibernate.cfg.Configuration;
 import org.hibernate.testing.junit4.BaseCoreFunctionalTestCase;
 import org.junit.Test;
 
-import com.enhancement.generics.Generic;
+import com.enhancement.secondlevelcache.NoCacheConcurrencyStrategyEntity;
 
 /**
  * This template demonstrates how to develop a test case for Hibernate ORM, using its built-in unit test framework.
@@ -34,13 +38,26 @@ public class SecondLevelCacheTestCase extends BaseCoreFunctionalTestCase {
 	@Override
 	protected Class[] getAnnotatedClasses() {
 		return new Class[] {
-				Generic.class
+				NoCacheConcurrencyStrategyEntity.class
 		};
 	}
 
+	@Override
+	protected void configure(Configuration configuration) {
+		super.configure(configuration);
+		configuration.setProperty(AvailableSettings.USE_SECOND_LEVEL_CACHE, Boolean.TRUE.toString());
+	}
+
 	@Test
-	public void hhh12579() throws Exception {
-		System.out.printf("Just execute, it will fail during bootstrapping");
+	public void hhh12587() throws Exception {
+		try (Session s = openSession()) {
+			Transaction tx = s.beginTransaction();
+			NoCacheConcurrencyStrategyEntity bar = new NoCacheConcurrencyStrategyEntity();
+			s.save(bar);
+			s.flush();
+			s.clear();
+			tx.commit();
+		}
 	}
 
 }
