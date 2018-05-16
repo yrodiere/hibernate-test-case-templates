@@ -9,8 +9,13 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
+
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity
+@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE, include = "non-lazy")
 public class Foo {
 
 	@Column(name = "filedata", length = 1024 * 1024)
@@ -21,5 +26,8 @@ public class Foo {
 	@Id
 	@GeneratedValue
 	private int id;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	public Bar bar;
 
 }

@@ -6,7 +6,6 @@ import java.util.Set;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
@@ -24,7 +23,7 @@ public class AbstractMail {
 	@Id
 	@GeneratedValue
 	public int id;
-	
+
 	@ElementCollection
 	public Set<String> getTo() {
 		return to;

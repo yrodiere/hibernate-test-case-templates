@@ -17,13 +17,12 @@ package org.hibernate.bugs;
 
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-import org.hibernate.cfg.AvailableSettings;
-import org.hibernate.cfg.Configuration;
 import org.hibernate.testing.junit4.BaseCoreFunctionalTestCase;
+import org.junit.Assert;
 import org.junit.Test;
 
+import com.Bar;
 import com.Foo;
-import com.genericsenhancement.Generic;
 
 /**
  * This template demonstrates how to develop a test case for Hibernate ORM, using its built-in unit test framework.
@@ -34,40 +33,14 @@ import com.genericsenhancement.Generic;
  * What's even better?  Fork hibernate-orm itself, add your test case directly to a module's unit tests, then
  * submit it as a PR!
  */
-public class ORMUnitTestCase extends BaseCoreFunctionalTestCase {
+public class FooBarBlobCollectionORMUnitTestCase extends BaseCoreFunctionalTestCase {
 
-	// Add your entities here.
 	@Override
 	protected Class[] getAnnotatedClasses() {
 		return new Class[] {
 				Foo.class,
-				Generic.class
+				Bar.class
 		};
-	}
-
-	// If you use *.hbm.xml mappings, instead of annotations, add the mappings here.
-	@Override
-	protected String[] getMappings() {
-		return new String[] {
-				//				"Foo.hbm.xml",
-				//				"Bar.hbm.xml"
-		};
-	}
-
-	// If those mappings reside somewhere other than resources/org/hibernate/test, change this.
-	@Override
-	protected String getBaseForMappings() {
-		return "org/hibernate/test/";
-	}
-
-	// Add in any settings that are specific to your test.  See resources/hibernate.properties for the defaults.
-	@Override
-	protected void configure(Configuration configuration) {
-		super.configure(configuration);
-
-		configuration.setProperty(AvailableSettings.SHOW_SQL, Boolean.TRUE.toString());
-		configuration.setProperty(AvailableSettings.FORMAT_SQL, Boolean.TRUE.toString());
-		//configuration.setProperty( AvailableSettings.GENERATE_STATISTICS, "true" );
 	}
 
 	// Add your tests, using standard JUnit.
@@ -89,7 +62,28 @@ public class ORMUnitTestCase extends BaseCoreFunctionalTestCase {
 	}
 
 	@Test
-	public void hhh12579() throws Exception {
-		new Generic();
+	public void hhh12425() throws Exception {
+		Session s = openSession();
+		Transaction tx = s.beginTransaction();
+		// Do stuff...
+		Bar bar = new Bar();
+		bar.foos.add(createFoo(s, bar));
+		bar.foos.add(createFoo(s, bar));
+
+		s.save(bar);
+		s.flush();
+		s.clear();
+		Bar newBar = s.get(Bar.class, bar.id);
+		Assert.assertEquals(2, newBar.foos.size());
+		tx.commit();
+		s.close();
+	}
+
+	private Foo createFoo(Session s, Bar bar) {
+		Foo foo = new Foo();
+		foo.blob = s.getLobHelper().createBlob("TEST CASE".getBytes());
+		foo.bar = bar;
+		s.save(foo);
+		return foo;
 	}
 }

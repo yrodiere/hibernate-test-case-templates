@@ -13,9 +13,9 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity
-@Cache(usage = CacheConcurrencyStrategy.NONE)
+@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class Bar {
-	@OneToMany(fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "bar", fetch = FetchType.LAZY)
 	public Set<Foo> foos = new HashSet<>();
 
 	@Id
