@@ -7,9 +7,11 @@ import javax.persistence.Id;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
+import models.common.Base;
+
 @Entity
-@Cache(usage = CacheConcurrencyStrategy.NONE)
-public class NoCacheConcurrencyStrategyEntity {
+@Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
+public class CacheOnJoinedInheritance extends Base {
 
 	@Id
 	@GeneratedValue
