@@ -13,17 +13,9 @@ public class TestCase extends AbstractTestCase {
 	}
 
 	@Test
-	public void hhh12425() {
+	public void hhhxxx() {
 		doInOpenTransaction((s, tx) -> {
-			Authority a = new Authority();
-			JafSid sid = new JafSid();
-			sid.setRelatedEntity(a);
-			a.setSid(sid);
-			s.save(a);
-			s.flush();
-			s.clear();
-			//throws exception in next line!
-			s.get(Authority.class, a.getId());
+
 		});
 	}
 

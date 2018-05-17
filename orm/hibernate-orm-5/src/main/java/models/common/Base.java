@@ -4,8 +4,6 @@ import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.OneToMany;
@@ -20,18 +18,7 @@ import org.hibernate.annotations.PolymorphismType;
 @Inheritance(strategy = InheritanceType.JOINED)
 public abstract class Base extends DatabaseEntity {
 
-	private int id;
 	private Set<File> files;
-
-	@Id
-	@GeneratedValue
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
 
 	@OneToMany(mappedBy = "parent", fetch = FetchType.LAZY)
 	@Fetch(FetchMode.SUBSELECT)
