@@ -1,15 +1,34 @@
 package org.hibernate.bugs;
 
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.cfg.Configuration;
 import org.hibernate.resource.transaction.spi.TransactionStatus;
 import org.hibernate.testing.junit4.BaseCoreFunctionalTestCase;
 
 public abstract class AbstractTestCase extends BaseCoreFunctionalTestCase {
 
+	public static final String TRUE = Boolean.TRUE.toString();
+	public static final String FALSE = Boolean.FALSE.toString();
 	private Class[] annotatedClasses;
+	private Consumer<Configuration> config;
+
+	@Override
+	protected void configure(Configuration configuration) {
+		super.configure(configuration);
+		if (config != null) {
+			config.accept(configuration);
+		}
+
+	}
+
+	protected AbstractTestCase configure(Consumer<Configuration> config) {
+		this.config = config;
+		return this;
+	}
 
 	protected AbstractTestCase(Class<?> mandatoryClass, Class... additionalClasses) {
 		Class[] annotatedClasses = new Class[additionalClasses.length + 1];
