@@ -1,9 +1,9 @@
-package models.common;
+package models.common.security;
 
 import javax.persistence.Entity;
 
 @Entity
-public class User extends Base {
+public class User extends SidEntity {
 
 	private String name;
 
