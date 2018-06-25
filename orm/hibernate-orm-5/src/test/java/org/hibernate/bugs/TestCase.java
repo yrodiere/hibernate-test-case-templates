@@ -10,13 +10,21 @@ import javax.persistence.ManyToMany;
 import javax.persistence.MappedSuperclass;
 
 import org.hibernate.cfg.AvailableSettings;
+import org.hibernate.cfg.Configuration;
 
+import org.hibernate.testing.junit4.BaseCoreFunctionalTestCase;
 import org.junit.Test;
 
-public class TestCase extends AbstractTestCase {
-	public TestCase() {
-		super(JafSid.class, UserGroup.class);
-		configure(c -> c.setProperty(AvailableSettings.DEFAULT_BATCH_FETCH_SIZE, "30"));
+public class TestCase extends BaseCoreFunctionalTestCase {
+	@Override
+	protected Class<?>[] getAnnotatedClasses() {
+		return new Class[] { JafSid.class, UserGroup.class };
+	}
+
+	@Override
+	protected void configure(Configuration configuration) {
+		super.configure( configuration );
+		configuration.setProperty(AvailableSettings.DEFAULT_BATCH_FETCH_SIZE, "30");
 	}
 
 	@Test
