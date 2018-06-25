@@ -10,7 +10,7 @@ import models.common.security.UserGroup;
 
 public class TestCase extends AbstractTestCase {
 	public TestCase() {
-		super(Authority.class, JafSid.class, UserGroup.class, File.class);
+		super(JafSid.class, UserGroup.class);
 		configure(c -> c.setProperty(AvailableSettings.DEFAULT_BATCH_FETCH_SIZE, "30"));
 	}
 
