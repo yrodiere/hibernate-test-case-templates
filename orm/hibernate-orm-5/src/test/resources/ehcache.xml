@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<ehcache xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:noNamespaceSchemaLocation='http://ehcache.org/ehcache.xsd'>
+
+    <diskStore path="/tmp/HHH-12641/cache/cb4/c-application/rweb/cachestore.tmp" />
+
+    <defaultCache eternal='true' maxElementsInMemory='1000' overflowToDisk='true' />
+
+</ehcache>

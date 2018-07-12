@@ -1,9 +1,14 @@
 package org.hibernate.bugs;
 
+import java.util.concurrent.atomic.AtomicReference;
+
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.Metadata;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
+
+import org.hibernate.testing.transaction.TransactionUtil;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -18,15 +23,16 @@ public class ORMStandaloneTestCase {
 	@Before
 	public void setup() {
 		StandardServiceRegistryBuilder srb = new StandardServiceRegistryBuilder()
-			// Add in any settings that are specific to your test. See resources/hibernate.properties for the defaults.
 			.applySetting( "hibernate.show_sql", "true" )
 			.applySetting( "hibernate.format_sql", "true" )
 			.applySetting( "hibernate.hbm2ddl.auto", "update" );
 
 		Metadata metadata = new MetadataSources( srb.build() )
-		// Add your entities here.
-		//	.addAnnotatedClass( Foo.class )
-			.buildMetadata();
+				.addAnnotatedClass( CsvDataSourceResource.class )
+				.addAnnotatedClass( DataBaseSourceResource.class )
+				.addAnnotatedClass( DataSourceResource.class )
+				.addAnnotatedClass( JPAAccessibleResource.class )
+				.buildMetadata();
 
 		sf = metadata.buildSessionFactory();
 	}
@@ -34,7 +40,29 @@ public class ORMStandaloneTestCase {
 	// Add your tests, using standard JUnit.
 
 	@Test
-	public void hhh123Test() throws Exception {
+	public void hhh12641Test() throws Exception {
+		AtomicReference<Long> id = new AtomicReference<>();
 
+		TransactionUtil.doInHibernate( this::getSessionFactory, s -> {
+			CsvDataSourceResource entity = new CsvDataSourceResource();
+			entity.setProtocol( "http" );
+			entity.setHost( "localhost" );
+			entity.setPath( "path/to/something" );
+			entity.setPort( 4242 );
+			entity.setUsername( "mimidu68" );
+			entity.setPassword( "hunter12" );
+			s.persist( entity );
+			id.set( entity.getId() );
+		} );
+
+		TransactionUtil.doInHibernate( this::getSessionFactory, s -> {
+			CsvDataSourceResource entity = s.find( CsvDataSourceResource.class, id.get() );
+			Assert.assertNotNull( entity );
+		} );
 	}
+
+	private SessionFactory getSessionFactory() {
+		return sf;
+	}
+
 }
