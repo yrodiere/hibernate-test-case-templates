@@ -62,7 +62,7 @@ public class YourTestCase extends SearchTestBase {
 			Query query = qb.all().createQuery();
 			Sort sort = qb.sort().byField( "sort-address" ).andByField( "sort-date" ).createSort();
 	
-			List<RegistryReference> result = (List<RegistryReference>) session.createFullTextQuery( query, RegistryReference.class )
+			List<RegistryReference> result = (List<RegistryReference>) session.createFullTextQuery( query )
 					.setSort( sort )
 					.list();
 			assertEquals( 1, result.size() );
