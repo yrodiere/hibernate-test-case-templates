@@ -3,6 +3,7 @@ package org.hibernate.bugs;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.persistence.PersistenceException;
 
 import org.junit.After;
 import org.junit.Before;
@@ -31,8 +32,23 @@ public class JPAUnitTestCase {
 	public void hhh123Test() throws Exception {
 		EntityManager entityManager = entityManagerFactory.createEntityManager();
 		entityManager.getTransaction().begin();
-		// Do stuff...
-		entityManager.getTransaction().commit();
-		entityManager.close();
+
+		try {
+			// Do stuff...
+			Application application = sampleApplication();
+			entityManager.persist( application );
+			entityManager.getTransaction().commit();
+		} catch ( PersistenceException exception ) {
+			entityManager.getTransaction().rollback();
+			exception.printStackTrace();
+		} finally {
+			entityManager.close();
+		}
+	}
+
+	private Application sampleApplication() {
+		return new Application(
+				ApplicationType.UNI5,
+				MedicalRequirementType.B, MedicalRequirementType.A );
 	}
 }
