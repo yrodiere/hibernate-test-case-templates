@@ -12,7 +12,6 @@ public class MedicalRequirement {
 
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
 	@JoinColumn(name = "applicationId")
-	@OrderColumn(name = "requirementIndex", nullable = false)
 	private Application application;
 
 	@Enumerated(EnumType.STRING)

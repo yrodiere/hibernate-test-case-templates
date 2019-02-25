@@ -16,6 +16,7 @@ class Application {
 	private ApplicationType applicationType = ApplicationType.UNI5;
 
 	@OneToMany( mappedBy = "application", cascade = { CascadeType.ALL }, orphanRemoval = true )
+	@OrderColumn(name = "requirementIndex", nullable = false)
 	private List<MedicalRequirement> requirements;
 
 	public Application( ApplicationType applicationType, MedicalRequirementType... requirements ) {
@@ -26,7 +27,7 @@ class Application {
 			addRequirement( requirementType );
 	}
 
-	Application() {
+	public Application() {
 		// for persistence
 	}
 

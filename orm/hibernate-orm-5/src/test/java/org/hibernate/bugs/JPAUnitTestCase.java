@@ -40,7 +40,7 @@ public class JPAUnitTestCase {
 			entityManager.getTransaction().commit();
 		} catch ( PersistenceException exception ) {
 			entityManager.getTransaction().rollback();
-			exception.printStackTrace();
+			throw exception;
 		} finally {
 			entityManager.close();
 		}
