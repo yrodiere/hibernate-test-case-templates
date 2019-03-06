@@ -9,9 +9,6 @@
         <description>Hibernate test case template Persistence Unit</description>
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 
-        <class>org.hibernate.bugs.Application</class>
-        <class>org.hibernate.bugs.MedicalRequirement</class>
-
         <exclude-unlisted-classes>false</exclude-unlisted-classes>
 
         <properties>
