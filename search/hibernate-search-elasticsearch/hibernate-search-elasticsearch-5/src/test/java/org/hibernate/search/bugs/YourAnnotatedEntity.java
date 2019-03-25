@@ -16,26 +16,41 @@ public class YourAnnotatedEntity {
 	private Long id;
 
 	@Field
-	private String name;
+	private String firstName;
 
-	protected YourAnnotatedEntity() {
+	@Field
+	private String lastName;
+
+	public YourAnnotatedEntity() {
 	}
 
-	public YourAnnotatedEntity(Long id, String name) {
+	public YourAnnotatedEntity(Long id, String firstName, String lastName) {
 		this.id = id;
-		this.name = name;
+		this.firstName = firstName;
+		this.lastName = lastName;
 	}
 
 	public Long getId() {
 		return id;
 	}
 
-	public String getName() {
-		return name;
+	public void setId(Long id) {
+		this.id = id;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public String getFirstName() {
+		return firstName;
 	}
 
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+
+	public String getLastName() {
+		return lastName;
+	}
+
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
 }

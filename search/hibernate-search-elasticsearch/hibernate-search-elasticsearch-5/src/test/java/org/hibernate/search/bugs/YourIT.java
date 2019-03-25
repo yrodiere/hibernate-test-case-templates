@@ -4,7 +4,9 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
+import org.apache.lucene.index.Term;
 import org.apache.lucene.search.Query;
+import org.apache.lucene.search.TermQuery;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.search.FullTextSession;
@@ -28,21 +30,24 @@ public class YourIT extends SearchTestBase {
 	@SuppressWarnings("unchecked")
 	public void testYourBug() {
 		try ( Session s = getSessionFactory().openSession() ) {
-			YourAnnotatedEntity yourEntity1 = new YourAnnotatedEntity( 1L, "example" );
-			YourAnnotatedEntity yourEntity2 = new YourAnnotatedEntity( 2L, "test" );
-	
+			YourAnnotatedEntity yourEntity = new YourAnnotatedEntity( 1L, "goran", "jaric" );
+
 			Transaction tx = s.beginTransaction();
-			s.persist( yourEntity1 );
-			s.persist( yourEntity2 );
+			s.persist( yourEntity );
 			tx.commit();
-	
+
 			FullTextSession session = Search.getFullTextSession( s );
 			QueryBuilder qb = session.getSearchFactory().buildQueryBuilder().forEntity( YourAnnotatedEntity.class ).get();
-			Query query = qb.keyword().onField( "name" ).matching( "example" ).createQuery();
-	
+			Query query = qb.bool().must(qb.bool()
+					.must(new TermQuery(new Term("id", "1"))).createQuery())
+					.filteredBy(qb.bool()
+							.should(new TermQuery(new Term("firstName", "nonexisting")))
+							.must(new TermQuery(new Term("lastName", "jaric")))
+									.createQuery()
+					)
+					.createQuery();
 			List<YourAnnotatedEntity> result = (List<YourAnnotatedEntity>) session.createFullTextQuery( query ).list();
 			assertEquals( 1, result.size() );
-			assertEquals( 1l, (long) result.get( 0 ).getId() );
 		}
 	}
 
