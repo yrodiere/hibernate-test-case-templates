@@ -35,8 +35,8 @@ public class YourTestCase extends SearchTestBase {
 
 			FullTextSession session = Search.getFullTextSession( s );
 			QueryBuilder qb = session.getSearchFactory().buildQueryBuilder().forEntity( YourAnnotatedEntity.class ).get();
-			Query query = qb.bool().must(qb.bool()
-					.must(new TermQuery(new Term("id", "1"))).createQuery())
+			Query query = qb.bool()
+					.must(new TermQuery(new Term("id", "1")))
 					.filteredBy(qb.bool()
 							.should(new TermQuery(new Term("firstName", "nonexisting")))
 							.must(new TermQuery(new Term("lastName", "jaric")))
