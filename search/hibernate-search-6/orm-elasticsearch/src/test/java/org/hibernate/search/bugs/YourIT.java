@@ -15,25 +15,25 @@ public class YourIT extends SearchTestBase {
 
 	@Override
 	public Class<?>[] getAnnotatedClasses() {
-		return new Class<?>[]{ YourAnnotatedEntity.class };
+		return new Class<?>[]{ Product.class , ProductMetadata.class};
 	}
 
 	@Test
 	public void testYourBug() {
 		try ( Session s = getSessionFactory().openSession() ) {
-			YourAnnotatedEntity yourEntity1 = new YourAnnotatedEntity( 1L, "Jane Smith" );
-			YourAnnotatedEntity yourEntity2 = new YourAnnotatedEntity( 2L, "John Doe" );
+			Product product1 = new Product( 1L, "Jane Smith" );
+			Product product2 = new Product( 2L, "John Doe" );
 	
 			Transaction tx = s.beginTransaction();
-			s.persist( yourEntity1 );
-			s.persist( yourEntity2 );
+			s.persist( product1 );
+			s.persist( product2 );
 			tx.commit();
 		}
 
 		try ( Session session = getSessionFactory().openSession() ) {
 			SearchSession searchSession = Search.session( session );
 
-			List<YourAnnotatedEntity> hits = searchSession.search( YourAnnotatedEntity.class )
+			List<Product> hits = searchSession.search( Product.class )
 					.where( f -> f.match().field( "name" ).matching( "smith" ) )
 					.fetchHits( 20 );
 
