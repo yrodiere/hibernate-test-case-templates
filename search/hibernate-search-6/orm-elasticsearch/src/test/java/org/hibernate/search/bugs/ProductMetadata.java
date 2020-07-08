@@ -14,6 +14,7 @@ import org.hibernate.search.mapper.pojo.mapping.definition.annotation.KeywordFie
 public class ProductMetadata {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @JoinColumn(name = "product_id")
@@ -50,5 +51,5 @@ public class ProductMetadata {
 		this.value = value;
 	}
 
-   
+
 }
