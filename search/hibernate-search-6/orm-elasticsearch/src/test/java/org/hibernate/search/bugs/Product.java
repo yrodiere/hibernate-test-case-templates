@@ -31,7 +31,7 @@ public class Product {
     @OneToMany(mappedBy = "product", fetch = FetchType.EAGER, cascade = { CascadeType.REMOVE })
     @Fetch(value = FetchMode.SUBSELECT)
     @IndexedEmbedded(storage = ObjectFieldStorage.NESTED)
-    private List<ProductMetadata> productMetadata;
+    private List<ProductMetadata> productMetadata = new ArrayList<>();
 
 	protected Product() {
 	}

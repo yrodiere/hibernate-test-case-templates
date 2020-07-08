@@ -90,11 +90,13 @@ public class YourIT extends SearchTestBase {
             pm11.setKey("genre");
             pm11.setValue("crime");
             pm11.setProduct(product1);
+            product1.getProductMetadata().add( pm11 );
 
             final ProductMetadata pm12 = new ProductMetadata();
             pm12.setKey("author");
             pm12.setValue("Christie");
             pm12.setProduct(product1);
+            product1.getProductMetadata().add( pm12 );
 
             final Product product2 = new Product(2L, "John Doe");
 
@@ -102,11 +104,13 @@ public class YourIT extends SearchTestBase {
             pm21.setKey("genre");
             pm21.setValue("spy");
             pm21.setProduct(product2);
+            product2.getProductMetadata().add( pm21 );
 
             final ProductMetadata pm22 = new ProductMetadata();
             pm22.setKey("author");
             pm22.setValue("Forsyth");
             pm22.setProduct(product2);
+            product2.getProductMetadata().add( pm22 );
 
             final Transaction tx = s.beginTransaction();
             s.persist(product1);
@@ -142,7 +146,7 @@ public class YourIT extends SearchTestBase {
                                 .matching("crime"))));
             })).fetchHits(20);
 
-            assertEquals(0, hits.size());// This should actually be 1
+            assertEquals(1, hits.size());// This should actually be 1
         }
 
         try (Session s = getSessionFactory().openSession()) {
