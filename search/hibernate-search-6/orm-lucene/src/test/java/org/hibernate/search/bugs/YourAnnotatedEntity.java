@@ -5,6 +5,7 @@ import javax.persistence.Id;
 
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.DocumentId;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextField;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.GenericField;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.Indexed;
 
 @Entity
@@ -17,6 +18,9 @@ public class YourAnnotatedEntity {
 
 	@FullTextField(analyzer = "nameAnalyzer")
 	private String name;
+
+	@GenericField
+	private long salesAmount;
 
 	protected YourAnnotatedEntity() {
 	}
@@ -38,4 +42,11 @@ public class YourAnnotatedEntity {
 		this.name = name;
 	}
 
+	public long getSalesAmount() {
+		return salesAmount;
+	}
+
+	public void setSalesAmount(long salesAmount) {
+		this.salesAmount = salesAmount;
+	}
 }

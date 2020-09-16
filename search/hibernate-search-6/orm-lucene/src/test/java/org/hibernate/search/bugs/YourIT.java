@@ -22,7 +22,9 @@ public class YourIT extends SearchTestBase {
 	public void testYourBug() {
 		try ( Session s = getSessionFactory().openSession() ) {
 			YourAnnotatedEntity yourEntity1 = new YourAnnotatedEntity( 1L, "Jane Smith" );
+			yourEntity1.setSalesAmount( 5300L );
 			YourAnnotatedEntity yourEntity2 = new YourAnnotatedEntity( 2L, "John Doe" );
+			yourEntity2.setSalesAmount( 15_000L );
 	
 			Transaction tx = s.beginTransaction();
 			s.persist( yourEntity1 );
@@ -34,13 +36,24 @@ public class YourIT extends SearchTestBase {
 			SearchSession searchSession = Search.session( session );
 
 			List<YourAnnotatedEntity> hits = searchSession.search( YourAnnotatedEntity.class )
-					.where( f -> f.match().field( "name" ).matching( "smith" ) )
+					.where( f -> f.range().field( "salesAmount" )
+							.between( 1L, 10_000L ) )
 					.fetchHits( 20 );
 
 			assertThat( hits )
 					.hasSize( 1 )
 					.element( 0 ).extracting( YourAnnotatedEntity::getId )
 					.isEqualTo( 1L );
+
+			hits = searchSession.search( YourAnnotatedEntity.class )
+					.where( f -> f.range().field( "salesAmount" )
+							.between( 10_000L, 53_000L ) )
+					.fetchHits( 20 );
+
+			assertThat( hits )
+					.hasSize( 1 )
+					.element( 0 ).extracting( YourAnnotatedEntity::getId )
+					.isEqualTo( 2L );
 		}
 	}
 
