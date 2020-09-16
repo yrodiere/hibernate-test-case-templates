@@ -9,33 +9,21 @@ import org.hibernate.search.mapper.pojo.mapping.definition.annotation.Indexed;
 
 @Entity
 @Indexed
-public class YourAnnotatedEntity {
+public class Game extends GameInfo {
 
 	@Id
 	@DocumentId
 	private Long id;
 
-	@FullTextField(analyzer = "nameAnalyzer")
-	private String name;
-
-	protected YourAnnotatedEntity() {
+	protected Game() {
 	}
 
-	public YourAnnotatedEntity(Long id, String name) {
+	public Game(Long id) {
 		this.id = id;
-		this.name = name;
 	}
 
 	public Long getId() {
 		return id;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
 	}
 
 }
