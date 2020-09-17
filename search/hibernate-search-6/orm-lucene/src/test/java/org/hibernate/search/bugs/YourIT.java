@@ -32,27 +32,29 @@ public class YourIT extends SearchTestBase {
 	@Test
 	public void testYourBug() {
 		try ( Session s = getSessionFactory().openSession() ) {
-			Game yourEntity1 = new Game( 1L );
-			Game yourEntity2 = new Game( 2L );
-			yourEntity1.setName( "AmonsDu" );
-			yourEntity2.setName( "US Army" );
+			Game yourEntity1 = new Game( 21L );
+			//Game yourEntity2 = new Game( 2L );
+			yourEntity1.setName( "Among Us" );
+			yourEntity1.setDescription("C'est un murder en fait");
+			yourEntity1.setPlatform("Steam");
+			yourEntity1.setPlatformId("945360");
+			//yourEntity2.setName( "US Army" );
 
 			Transaction tx = s.beginTransaction();
 			s.persist( yourEntity1 );
-			s.persist( yourEntity2 );
 			tx.commit();
 		}
 
 		try ( Session session = getSessionFactory().openSession() ) {
-			LuceneSearchQuery<Game> gameSearchQuery = fuzzySearch( session, "amonsdu" );
+			LuceneSearchQuery<Game> gameSearchQuery = fuzzySearch( session, "zj" );
 
 			SearchResult<Game> result = gameSearchQuery.fetch( 0, 2 );
 			assertThat( result.hits() )
 					.hasSize( 1 )
 					.element( 0 ).extracting( Game::getId )
-					.isEqualTo( 1L );
+					.isEqualTo( 21L );
 
-			Explanation explanation = gameSearchQuery.explain( 1L );
+			Explanation explanation = gameSearchQuery.explain( 21L );
 			log.info( explanation.toString() );
 			log.info( result.hits().toString() );
 		}
