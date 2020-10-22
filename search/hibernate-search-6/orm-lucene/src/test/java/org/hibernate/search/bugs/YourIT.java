@@ -27,7 +27,7 @@ public class YourIT extends SearchTestBase {
 	public void testYourBug() {
 			try ( Session s = getSessionFactory().openSession() ) {
 				SubjectEntity yourEntity1 = new SubjectEntity( "string","Hibernate" );
-				PersonEntity yourEntity2 = new PersonEntity("string", "John","adress","zip","country");			
+				PersonEntity yourEntity2 = new PersonEntity("string", "Hibernate John","adress","zip","country");
 				MetaData md = new MetaData();
 				md.addData(yourEntity1);
 				md.addData(yourEntity2);	
@@ -40,10 +40,10 @@ public class YourIT extends SearchTestBase {
 				SearchSession searchSession = Search.session( session );
 
 				List<UntypedDataEntity> hits = searchSession.search( UntypedDataEntity.class )
-						.where(f -> f.bool()
-				        		.must(f.match().fields( "subject" ).matching( "Hibernate"))
-				        		.must(f.match().fields( "name" ).matching( "John")))
-				        .fetchHits(20);
+						.where(f -> f.simpleQueryString()
+								.fields("subject", "name")
+								.matching( "Hibernate + John"))
+						.fetchHits(20);
 				System.out.println("#############################################");
 				for(UntypedDataEntity e : hits) {
 					System.out.println(e.toString());
