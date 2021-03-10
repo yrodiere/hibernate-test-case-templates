@@ -13,7 +13,6 @@ import org.hibernate.search.engine.search.predicate.SearchPredicate;
 import org.hibernate.search.engine.search.predicate.dsl.SearchPredicateFactory;
 import org.hibernate.search.engine.search.query.SearchQuery;
 import org.hibernate.search.mapper.orm.Search;
-import org.hibernate.search.mapper.orm.scope.SearchScope;
 import org.hibernate.search.mapper.orm.session.SearchSession;
 
 import org.junit.Test;
@@ -71,21 +70,13 @@ public class FindInWindowIT extends SearchTestBase {
 
 		try (Session session = getSessionFactory().openSession()) {
 			SearchSession searchSession = Search.session(session);
-			SearchScope<SearchResult> scope = searchSession.scope(Arrays.asList(Series.class, Asset.class));
-			SearchPredicateFactory assetPredicateFactory = scope.predicate();
-			SearchPredicate nestedPredicate = assetPredicateFactory.nested().objectField("dataPackages").nest(
-				buildPredicate(assetPredicateFactory, "")
-			).toPredicate();
-			SearchPredicate assetPredicate = assetPredicateFactory.bool().filter(nestedPredicate).mustNot(
-				assetPredicateFactory.exists().field("series")
-			).toPredicate();
-			SearchPredicateFactory seriesPredicateFactory = scope.predicate();
-			SearchPredicate seriesPredicate = seriesPredicateFactory.nested().objectField("episodes.dataPackages").nest(
-				buildPredicate(seriesPredicateFactory, "episodes.")
-			).toPredicate();
-			SearchQuery<SearchResult> query = searchSession.search(scope).where(
-				scope.predicate().bool().should(assetPredicate).should(seriesPredicate).toPredicate()
-			).toQuery();
+			SearchQuery<SearchResult> query = searchSession.search(Arrays.asList(Series.class, Asset.class))
+					.where(f -> f.bool()
+							.should(f.bool()
+									.filter(buildPredicate(f, ""))
+									.mustNot(f.exists().field("series")))
+							.should(buildPredicate(f, "episodes.")))
+					.toQuery();
 			System.out.println(query);
 			List<SearchResult> results = query.fetchAllHits();
 
@@ -100,11 +91,17 @@ public class FindInWindowIT extends SearchTestBase {
 	}
 
     private static SearchPredicate buildPredicate(SearchPredicateFactory factory, String prefix) {
-        return factory.bool().filter(
-            factory.range().field(prefix + "dataPackages.startDate").lessThan(Calendar.getInstance())
-        ).filter(
-            factory.range().field(prefix + "dataPackages.endDate").greaterThan(Calendar.getInstance())
-        ).toPredicate();
+        return factory.nested().objectField(prefix + "dataPackages")
+				.nest(factory.bool()
+						.filter(
+							factory.range().field(prefix + "dataPackages.startDate")
+									.lessThan(Calendar.getInstance())
+						)
+						.filter(
+							factory.range().field(prefix + "dataPackages.endDate")
+									.greaterThan(Calendar.getInstance())
+						))
+				.toPredicate();
     }
 
     private static DataPackage createDataPackage(Long id, boolean inWindow) {
