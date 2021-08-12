@@ -2,7 +2,9 @@ package org.hibernate.search.bugs;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -21,26 +23,30 @@ public class YourIT extends SearchTestBase {
 	@Test
 	public void testYourBug() {
 		try ( Session s = getSessionFactory().openSession() ) {
-			YourAnnotatedEntity yourEntity1 = new YourAnnotatedEntity( 1L, "Jane Smith" );
-			YourAnnotatedEntity yourEntity2 = new YourAnnotatedEntity( 2L, "John Doe" );
-	
-			Transaction tx = s.beginTransaction();
-			s.persist( yourEntity1 );
-			s.persist( yourEntity2 );
-			tx.commit();
+			s.beginTransaction();
+			BureauHypotheque bureauHypotheque = new BureauHypotheque();
+			bureauHypotheque.setId( 1L );
+			bureauHypotheque.setNomComplet( "foo" );
+
+			Depot depot = new Depot();
+			depot.setId( 2L );
+
+			depot.setBureauHypotheque( bureauHypotheque );
+			bureauHypotheque.getActesPrives().add( depot );
+
+			s.persist( depot );
+			s.persist( bureauHypotheque );
+			s.getTransaction().commit();
 		}
 
-		try ( Session session = getSessionFactory().openSession() ) {
-			SearchSession searchSession = Search.session( session );
-
-			List<YourAnnotatedEntity> hits = searchSession.search( YourAnnotatedEntity.class )
-					.where( f -> f.match().field( "name" ).matching( "smith" ) )
-					.fetchHits( 20 );
-
-			assertThat( hits )
-					.hasSize( 1 )
-					.element( 0 ).extracting( YourAnnotatedEntity::getId )
-					.isEqualTo( 1L );
+		try ( Session s = getSessionFactory().openSession() ) {
+			s.beginTransaction();
+			Depot depot = s.load( Depot.class, 2L );
+			BureauHypotheque bureauHypotheque = depot.getBureauHypotheque();
+			assertThat( bureauHypotheque ).isNotNull();
+			Set<Depot> actesPrives = bureauHypotheque.getActesPrives();
+			assertThat( actesPrives ).isNotEmpty();
+			s.getTransaction().commit();
 		}
 	}
 
