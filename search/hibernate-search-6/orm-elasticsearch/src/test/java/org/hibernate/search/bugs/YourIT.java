@@ -15,7 +15,7 @@ public class YourIT extends SearchTestBase {
 
 	@Override
 	public Class<?>[] getAnnotatedClasses() {
-		return new Class<?>[]{ YourAnnotatedEntity.class };
+		return new Class<?>[]{ YourAnnotatedEntity.class, BasicDepot.class, Depot.class, BasicBureauHypotheque.class, BureauHypotheque.class };
 	}
 
 	@Test
