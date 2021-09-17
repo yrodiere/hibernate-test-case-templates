@@ -3,6 +3,9 @@ package biz.bitech.hibernate.search6.lucene.bugs;
 import org.hibernate.search.mapper.orm.Search;
 import org.hibernate.search.mapper.orm.session.SearchSession;
 import org.hibernate.search.mapper.orm.work.SearchIndexingPlan;
+
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 import javax.persistence.EntityManager;
@@ -10,7 +13,6 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 import java.math.BigDecimal;
-import java.util.HashSet;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -19,9 +21,23 @@ import static org.junit.Assert.assertNull;
 
 public class BITTestCase4 {
 
+	private EntityManagerFactory entityManagerFactory;
+
+	@Before
+	public void setup() {
+		entityManagerFactory = Persistence.createEntityManagerFactory("templatePU");
+	}
+
+	@After
+	public void teardown() {
+		if ( entityManagerFactory != null ) {
+			entityManagerFactory.close();
+			entityManagerFactory = null;
+		}
+	}
+
 	@Test
 	public void testYourBug() {
-		EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("templatePU");
 		EntityManager em = entityManagerFactory.createEntityManager();
 
 		{

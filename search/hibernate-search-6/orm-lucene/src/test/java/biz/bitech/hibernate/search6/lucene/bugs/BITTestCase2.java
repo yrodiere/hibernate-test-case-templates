@@ -9,6 +9,8 @@ import java.util.List;
 import org.hibernate.search.mapper.orm.Search;
 import org.hibernate.search.mapper.orm.session.SearchSession;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 import javax.persistence.EntityManager;
@@ -18,10 +20,24 @@ import javax.persistence.Persistence;
 
 public class BITTestCase2  {
 
+	private EntityManagerFactory entityManagerFactory;
+
+	@Before
+	public void setup() {
+		entityManagerFactory = Persistence.createEntityManagerFactory("templatePU");
+	}
+
+	@After
+	public void teardown() {
+		if ( entityManagerFactory != null ) {
+			entityManagerFactory.close();
+			entityManagerFactory = null;
+		}
+	}
+
 	@Test
 	@SuppressWarnings("unchecked")
 	public void testYourBug() {
-		EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("templatePU");
 		EntityManager em = entityManagerFactory.createEntityManager();
 
 		{

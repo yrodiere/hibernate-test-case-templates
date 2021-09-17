@@ -9,6 +9,9 @@ import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
 import org.hibernate.search.query.dsl.QueryBuilder;
 import org.hibernate.search.testsupport.TestForIssue;
+
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 import javax.persistence.EntityManager;
@@ -20,12 +23,25 @@ import static org.junit.Assert.*;
 
 public class BITTestCase1 {
 
+	private EntityManagerFactory entityManagerFactory;
+
+	@Before
+	public void setup() {
+		entityManagerFactory = Persistence.createEntityManagerFactory("templatePU");
+	}
+
+	@After
+	public void teardown() {
+		if ( entityManagerFactory != null ) {
+			entityManagerFactory.close();
+			entityManagerFactory = null;
+		}
+	}
+
 	@Test
 	@TestForIssue(jiraKey = "HSEARCH-NNNNN") // Please fill in the JIRA key of your issue
 	@SuppressWarnings("unchecked")
 	public void testYourBug() {
-
-		EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("templatePU");
 		EntityManager em = entityManagerFactory.createEntityManager();
 
 		{
