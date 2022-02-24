@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+		"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+		"http://infra.hibernate.org/tmp/dtd-https-redirect/hibernate-mapping-3.0.dtd">
+<hibernate-mapping default-lazy="false" package="org.hibernate.bugs">
+
+    <!-- a slightly modified copy of FooBar.hbm.xml from the legacy test package -->
+
+    <class
+		name="Foo"
+		table="`foos`">
+
+		<id name="id" type="long">
+			<generator class="increment"/>
+		</id>
+
+		<property name="text">
+			<column name="text_"/>
+		</property>
+	</class>
+
+</hibernate-mapping>
+
