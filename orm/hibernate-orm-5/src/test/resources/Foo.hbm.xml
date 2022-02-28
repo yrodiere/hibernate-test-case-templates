@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-mapping PUBLIC
 		"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
-		"http://infra.hibernate.org/tmp/dtd-https-redirect/hibernate-mapping-3.0.dtd">
+		"https://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping default-lazy="false" package="org.hibernate.bugs">
 
     <!-- a slightly modified copy of FooBar.hbm.xml from the legacy test package -->
