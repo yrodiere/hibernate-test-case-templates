@@ -10,7 +10,7 @@
 	<properties>
 		<version.com.h2database>1.4.200</version.com.h2database>
 		<version.junit>4.13.2</version.junit>
-		<version.org.hibernate>3.5.5-Final</version.org.hibernate>
+		<version.org.hibernate>4.3.11.Final</version.org.hibernate>
 		<version.org.slf4j>1.7.33</version.org.slf4j>
 	</properties>
 
@@ -20,16 +20,11 @@
 			<artifactId>hibernate-core</artifactId>
 			<version>${version.org.hibernate}</version>
 		</dependency>
-		<dependency>
-			<groupId>javax.transaction</groupId>
-			<artifactId>jta</artifactId>
-			<version>1.1</version>
-		</dependency>
 
 		<dependency>
-			<groupId>hsqldb</groupId>
-			<artifactId>hsqldb</artifactId>
-			<version>1.8.0.10</version>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<version>${version.com.h2database}</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
