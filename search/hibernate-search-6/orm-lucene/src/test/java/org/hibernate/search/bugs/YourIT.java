@@ -15,32 +15,40 @@ public class YourIT extends SearchTestBase {
 
 	@Override
 	public Class<?>[] getAnnotatedClasses() {
-		return new Class<?>[]{ YourAnnotatedEntity.class };
+		return new Class<?>[] { X.class, Y.class };
 	}
 
 	@Test
 	public void testYourBug() {
 		try ( Session s = getSessionFactory().openSession() ) {
-			YourAnnotatedEntity yourEntity1 = new YourAnnotatedEntity( 1L, "Jane Smith" );
-			YourAnnotatedEntity yourEntity2 = new YourAnnotatedEntity( 2L, "John Doe" );
-	
+			Y y1 = new Y( 1L, "Jane Smith" );
+			X x1 = new X(1L, y1);
+			Y y2 = new Y( 2L, "John Doe" );
+			X x2 = new X(2L, y2);
+			Y y3 = new Y( 3L, "Kevin Smith" );
+			X x3 = new X(3L, y3);
+
 			Transaction tx = s.beginTransaction();
-			s.persist( yourEntity1 );
-			s.persist( yourEntity2 );
+			s.persist( y1 );
+			s.persist( x1 );
+			s.persist( y2 );
+			s.persist( x2 );
+			s.persist( y3 );
+			s.persist( x3 );
 			tx.commit();
 		}
 
 		try ( Session session = getSessionFactory().openSession() ) {
 			SearchSession searchSession = Search.session( session );
 
-			List<YourAnnotatedEntity> hits = searchSession.search( YourAnnotatedEntity.class )
-					.where( f -> f.match().field( "name" ).matching( "smith" ) )
+			List<X> hits = searchSession.search( X.class )
+					.where( f -> f.match().field( "y.text" ).matching( "smith" ) )
 					.fetchHits( 20 );
 
 			assertThat( hits )
-					.hasSize( 1 )
-					.element( 0 ).extracting( YourAnnotatedEntity::getId )
-					.isEqualTo( 1L );
+					.hasSize( 2 )
+					.extracting( X::getId )
+					.containsExactlyInAnyOrder( 1L, 3L );
 		}
 	}
 
