@@ -6,6 +6,8 @@ import java.util.List;
 
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.graph.GraphSemantic;
+import org.hibernate.graph.RootGraph;
 import org.hibernate.search.mapper.orm.Search;
 import org.hibernate.search.mapper.orm.session.SearchSession;
 
@@ -43,6 +45,11 @@ public class YourIT extends SearchTestBase {
 
 			List<X> hits = searchSession.search( X.class )
 					.where( f -> f.match().field( "y.text" ).matching( "smith" ) )
+					.loading( o -> {
+						RootGraph<X> graph = session.createEntityGraph( X.class );
+						graph.addAttributeNode( "y" );
+						o.graph( graph, GraphSemantic.LOAD );
+					} )
 					.fetchHits( 20 );
 
 			assertThat( hits )
