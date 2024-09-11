@@ -8,6 +8,8 @@ import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import jakarta.persistence.EntityManager;
+
 /**
  * This template demonstrates how to develop a standalone test case for Hibernate ORM.  Although this is perfectly
  * acceptable as a reproducer, usage of ORMUnitTestCase is preferred!
@@ -26,7 +28,7 @@ class ORMStandaloneTestCase {
 
 		Metadata metadata = new MetadataSources( srb.build() )
 				// Add your entities here.
-				//	.addAnnotatedClass( Foo.class )
+				.addAnnotatedClass( Foo.class )
 				.buildMetadata();
 
 		sf = metadata.buildSessionFactory();
@@ -35,6 +37,12 @@ class ORMStandaloneTestCase {
 	// Add your tests, using standard JUnit 5:
 	@Test
 	void hhh123Test() throws Exception {
-
+		EntityManager em = sf.createEntityManager();
+		try {
+			em.createQuery( "select id from Foo f where f.textcol = 'foo'" ).getResultList();
+		}
+		finally {
+			em.close();
+		}
 	}
 }
