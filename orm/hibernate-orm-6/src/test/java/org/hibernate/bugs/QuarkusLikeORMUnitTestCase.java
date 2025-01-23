@@ -15,6 +15,8 @@
  */
 package org.hibernate.bugs;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.hibernate.cfg.AvailableSettings;
 
 import org.hibernate.testing.bytecode.enhancement.CustomEnhancementContext;
@@ -34,9 +36,8 @@ import org.junit.jupiter.api.Test;
  */
 @DomainModel(
 		annotatedClasses = {
-				// Add your entities here, e.g.:
-				// Foo.class,
-				// Bar.class
+				Document.class,
+				DocumentType.class
 		}
 )
 @ServiceRegistry(
@@ -65,11 +66,36 @@ import org.junit.jupiter.api.Test;
 @CustomEnhancementContext(QuarkusLikeEnhancementContext.class)
 class QuarkusLikeORMUnitTestCase {
 
-	// Add your tests, using standard JUnit.
 	@Test
-	void hhh123Test(SessionFactoryScope scope) throws Exception {
+	void correct(SessionFactoryScope scope) throws Exception {
 		scope.inTransaction( session -> {
-			// Do stuff...
+			var query = session.createSelectionQuery(
+					"""
+							SELECT document.id, documentType.name
+							FROM Document document LEFT JOIN document.documentType documentType
+							WHERE documentType.id IS NULL OR documentType.id > 0
+							""",
+					Object[].class
+			);
+			assertThat( query.getResultCount() ).isEqualTo( 4 );
+			assertThat( query.getResultList() ).hasSize( 4 ); // Fails, 3 instead.
 		} );
 	}
+
+	@Test
+	void incorrect(SessionFactoryScope scope) throws Exception {
+		scope.inTransaction( session -> {
+			var query = session.createSelectionQuery(
+					"""
+							SELECT document.id, documentType.name
+							FROM Document document LEFT JOIN document.documentType
+							WHERE documentType.id IS NULL OR documentType.id > 0
+							""",
+					Object[].class
+			);
+			assertThat( query.getResultCount() ).isEqualTo( 4 );
+			assertThat( query.getResultList() ).hasSize( 4 ); // Fails, 3 instead.
+		} );
+	}
+
 }
