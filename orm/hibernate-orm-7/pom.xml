@@ -38,6 +38,11 @@
 			<groupId>org.hibernate.orm</groupId>
 			<artifactId>hibernate-core</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>jakarta.data</groupId>
+			<artifactId>jakarta.data-api</artifactId>
+			<version>1.0.1</version>
+		</dependency>
 		<!--
 			Need to have a dependency on scanner if we want to rely on automatic entity discovery in tests,
 			JPAUnitTestCase in particular:
@@ -88,6 +93,13 @@
 				<version>3.14.0</version>
 				<configuration>
 					<release>17</release>
+					<parameters>true</parameters>
+					<annotationProcessorPaths>
+						<path>
+							<groupId>org.hibernate.orm</groupId>
+							<artifactId>hibernate-processor</artifactId>
+						</path>
+					</annotationProcessorPaths>
 				</configuration>
 			</plugin>
 			<plugin>

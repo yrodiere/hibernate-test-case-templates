@@ -1,5 +1,9 @@
 package org.hibernate.bugs;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.UUID;
+
 import org.hibernate.cfg.AvailableSettings;
 
 import org.hibernate.testing.bytecode.enhancement.CustomEnhancementContext;
@@ -19,9 +23,7 @@ import org.junit.jupiter.api.Test;
  */
 @DomainModel(
 		annotatedClasses = {
-				// Add your entities here, e.g.:
-				// Foo.class,
-				// Bar.class
+				MyEntity.class
 		}
 )
 @ServiceRegistry(
@@ -55,6 +57,37 @@ class QuarkusLikeORMUnitTestCase {
 	void hhh123Test(SessionFactoryScope scope) throws Exception {
 		scope.inTransaction( session -> {
 			// Do stuff...
+		} );
+	}
+
+
+	@Test
+	void save(SessionFactoryScope scope) {
+		scope.inStatelessTransaction( s -> {
+			var startOneToManyRepository = new StartOneToManyRepository_( s );
+			long id = 1L;
+
+			MyEntity myEntity = new MyEntity( id );
+
+			startOneToManyRepository.save( myEntity );
+
+			var result = startOneToManyRepository.findById( id );
+			assertThat(result).isPresent();
+		} );
+	}
+
+	@Test
+	void insert(SessionFactoryScope scope) {
+		scope.inStatelessTransaction( s -> {
+			var startOneToManyRepository = new StartOneToManyRepository_( s );
+			long id = 2L;
+
+			MyEntity myEntity = new MyEntity( id );
+
+			startOneToManyRepository.insert( myEntity );
+
+			var result = startOneToManyRepository.findById( id );
+			assertThat(result).isPresent();
 		} );
 	}
 }
