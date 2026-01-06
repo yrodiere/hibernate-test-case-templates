@@ -43,6 +43,11 @@
 			<artifactId>h2</artifactId>
 			<version>${version.com.h2database}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.mongodb</groupId>
+			<artifactId>mongodb-hibernate</artifactId>
+			<version>1.0.0-alpha0</version>
+		</dependency>
 
 		<dependency>
 			<groupId>org.hibernate.orm</groupId>
@@ -92,9 +97,9 @@
 							<base>${project.build.testOutputDirectory}</base>
 							<dir>${project.build.testOutputDirectory}</dir>
 							<enableAssociationManagement>false</enableAssociationManagement>
-							<enableDirtyTracking>false</enableDirtyTracking>
-							<enableExtendedEnhancement>false</enableExtendedEnhancement>
-							<enableLazyInitialization>false</enableLazyInitialization>
+							<enableDirtyTracking>true</enableDirtyTracking>
+							<enableExtendedEnhancement>true</enableExtendedEnhancement>
+							<enableLazyInitialization>true</enableLazyInitialization>
 						</configuration>
 						<phase>test-compile</phase>
 						<goals>
