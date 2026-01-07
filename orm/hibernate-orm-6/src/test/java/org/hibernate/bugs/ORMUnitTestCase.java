@@ -77,5 +77,26 @@ class ORMUnitTestCase {
         });
         assertThat(title)
                 .isEqualTo("Star Trek");
+        scope.inTransaction(session -> {
+            var movie = session.get(Movie.class, id);
+            movie.script = new Script(List.of(
+                    new Scene(List.of(
+                            new Line("Spock", "Run the diagnostic again"),
+                            new Line("Spock", "It's not the scanner then")
+                    )),
+                    new Scene(List.of(
+                            new Line("Kirk", "Energize"),
+                            new Line("Spock", "Live long and prosper")
+                    ))
+            ));
+        });
+        Scene scene2 = scope.fromTransaction(session -> {
+            var movie = session.get(Movie.class, id);
+            return movie.script.scenes.get(1);
+        });
+        assertThat(scene2.lines)
+                .element(1)
+                .extracting(Line::content)
+                .isEqualTo("Live long and prosper");
     }
 }
